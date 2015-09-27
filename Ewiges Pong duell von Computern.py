@@ -4,8 +4,8 @@ import sys
 display = pygame.display.set_mode((1200,600))
 
 class Pong(object): 
-    def __init__(self,displaygröße):
-        self.displaygröße = displaygröße
+    def __init__(self,displaygr):
+        self.displaygr = displaygr
         self.xkordinate = 600
         self.ykordinate = 300
         self.display = pygame.display.set_mode((1200,600))
@@ -19,27 +19,27 @@ class Pong(object):
         self.farbe = (255,255,255)
 
         self.richtung = [1,1]
-        self.berührung_rechts = False
-        self.berührung_links = False
+        self.beruhrung_rechts = False
+        self.beruhrung_links = False
         self.geschwindichkeit = 7
         #verschidene schwirgkeitsstufen --> verschiedene Geschwindichkeit
-    def update(self,ai_schläger,schlaeger):
+    def update(self,ai_schlager,schlager):
         self.xkordinate += self.richtung[0]*self.geschwindichkeit
         self.ykordinate += self.richtung[1]*self.geschwindichkeit
 
         self.rect.center = (self.xkordinate,self.ykordinate)
         if self.rect.top <= 0:
             self.richtung[1] = 1
-        elif self.rect.bottom >= self.displaygröße[1]-1:
+        elif self.rect.bottom >= self.displaygr[1]-1:
             self.richtung[1] = -1
 
-        if self.rect.right >= self.displaygröße[0]-1:
-            self.berührung_rechts = True
+        if self.rect.right >= self.displaygr[0]-1:
+            self.beruhrung_rechts = True
         elif self.rect.left <= 0:
-            self.berührung_links = True
-        if self.rect.colliderect(schlaeger.rect):
+            self.beruhrung_links = True
+        if self.rect.colliderect(schlager.rect):
             self.richtung[0] = 1
-        if self.rect.colliderect(ai_schläger.rect):
+        if self.rect.colliderect(ai_schlager.rect):
             self.richtung[0] = -1
 
                                                                           
@@ -47,9 +47,9 @@ class Pong(object):
         pygame.draw.circle(display, self.farbe, self.rect.center, self.radius, 0)
         pygame.draw.circle(display, (1,1,1), self.rect.center, self.radius, 1)
 
-class ai_schläger(object):
-    def __init__(self, displaygröße):
-        self.display_größe = displaygröße
+class ai_schlager(object):
+    def __init__(self, displaygr):
+        self.display_gr = displaygr
 
         self.xkordinate = 50
         self.ykordinate = 300
@@ -59,10 +59,10 @@ class ai_schläger(object):
         self.display = display
 
 
-        self.höhe = 100
+        self.h = 100
         self.breite = 10
 
-        self.rect = pygame.Rect(0, self.ykordinate-int(self.höhe*0.5),self.breite,self.höhe)
+        self.rect = pygame.Rect(0, self.ykordinate-int(self.h*0.5),self.breite,self.h)
 
         self.farbe = (255,255,255)
 
@@ -80,9 +80,9 @@ class ai_schläger(object):
     def render(self, display):
         pygame.draw.rect(display,self.farbe, self.rect, 0)
         pygame.draw.rect(display, (0,0,0), self.rect, 1)
-class schläger(object):
-    def __init__(self, displaygröße):
-        self.display_größe = displaygröße
+class schlager(object):
+    def __init__(self, displaygr):
+        self.display_gr = displaygr
 
         self.xkordinate = 1150
         self.ykordinate = 300
@@ -92,10 +92,10 @@ class schläger(object):
         self.display = display
 
 
-        self.höhe = 100
+        self.h = 100
         self.breite = 10
 
-        self.rect = pygame.Rect(0, self.ykordinate-int(self.höhe*0.5),self.breite,self.höhe)
+        self.rect = pygame.Rect(0, self.ykordinate-int(self.h*0.5),self.breite,self.h)
 
         self.farbe = (255,255,255)
 
@@ -116,15 +116,15 @@ class schläger(object):
 def Grund():
     pygame.init()
 
-    displaygröße = (1200,600)
+    displaygr = (1200,600)
     
-    display = pygame.display.set_mode(displaygröße)
+    display = pygame.display.set_mode(displaygr)
 
     clock = pygame.time.Clock()
-    schlaeger = schläger(displaygröße)
+    schlager = schlager(displaygr)
 
-    pong = Pong(displaygröße)
-    ai_schlaeger = ai_schläger(displaygröße)
+    pong = Pong(displaygr)
+    ai_schlager = ai_schlager(displaygr)
 
     
 
@@ -142,21 +142,14 @@ def Grund():
 
                 
 
-        ai_schlaeger.update(pong)
-        schlaeger.update(pong)
-        pong.update(schlaeger,ai_schlaeger)
-        
-    
-        
-        
+        ai_schlager.update(pong)
+        schlager.update(pong)
+        pong.update(schlager,ai_schlager)
 
-        #Man muss noch den Text auf dem display erzeugen!!!
-        #Neustart ermöglichen
-
-        if pong.berührung_rechts:
+        if pong.beruhrung_rechts:
             print("Win")
             laufzeit = False
-        elif pong.berührung_links:
+        elif pong.beruhrung_links:
             print("Game Over")
             laufzeit = False
         #erzeugung der Grafik
@@ -167,8 +160,8 @@ def Grund():
         
         pong.render(display)
         
-        ai_schlaeger.render(display)
-        schlaeger.render(display)
+        ai_schlager.render(display)
+        schlager.render(display)
         
 
         pygame.display.flip()
